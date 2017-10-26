@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,9 +67,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    // Detect faces by uploading face images
-// Frame faces after detection
 
     private void detectAndFrame(final Bitmap imageBitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -133,11 +131,15 @@ public class MainActivity extends AppCompatActivity {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.RED);
         int stokeWidth = 2;
         paint.setStrokeWidth(stokeWidth);
         if (faces != null) {
             for (Face face : faces) {
+                Random r = new Random();
+                int red = r.nextInt(255) + 1;
+                int green = r.nextInt(255) + 1;
+                int blue = r.nextInt(255) + 1;
+                paint.setColor(Color.rgb(red, green, blue));
                 FaceRectangle faceRectangle = face.faceRectangle;
                 canvas.drawRect(
                         faceRectangle.left,
@@ -145,6 +147,10 @@ public class MainActivity extends AppCompatActivity {
                         faceRectangle.left + faceRectangle.width,
                         faceRectangle.top + faceRectangle.height,
                         paint);
+                paint.setTextSize(faceRectangle.width/2);
+                FaceAttribute attribute = face.faceAttributes;
+                float size = paint.measureText(String.valueOf(attribute.age));
+                canvas.drawText(String.valueOf(attribute.age) + "歳", faceRectangle.left + (faceRectangle.width / 2) - size, (float) (faceRectangle.top + faceRectangle.height*1.5), paint);
             }
         }
         return bitmap;
