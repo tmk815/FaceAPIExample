@@ -145,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                         faceRectangle.left + faceRectangle.width,
                         faceRectangle.top + faceRectangle.height,
                         paint);
-                FaceAttribute attribute = face.faceAttributes;
             }
         }
         return bitmap;
