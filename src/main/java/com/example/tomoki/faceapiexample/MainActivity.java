@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -132,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setStyle(Paint.Style.STROKE);
         int stokeWidth = 2;
         paint.setStrokeWidth(stokeWidth);
         if (faces != null) {
@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 //色の設定
                 paint.setColor(Color.rgb(red, green, blue));
                 FaceRectangle faceRectangle = face.faceRectangle;
+                paint.setStyle(Paint.Style.STROKE);
                 //顔の周りの四角の描画
                 canvas.drawRect(
                         faceRectangle.left,
@@ -154,11 +155,14 @@ public class MainActivity extends AppCompatActivity {
                         paint);
                 //フォントサイズの設定
                 paint.setTextSize(faceRectangle.width/2);
+                //フォント、スタイルの設定
+                paint.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.BOLD));
+                paint.setStyle(Paint.Style.FILL);
                 FaceAttribute attribute = face.faceAttributes;
                 //文字幅
                 float size = paint.measureText(String.valueOf(attribute.age));
                 //x座標
-                float x = faceRectangle.left + (faceRectangle.width / 2) - size;
+                float x = (float)(faceRectangle.left + (faceRectangle.width / 2) - size/1.5);
                 //y座標
                 float y = (float)(faceRectangle.top + faceRectangle.height * 1.5);
                 //年齢の描画
