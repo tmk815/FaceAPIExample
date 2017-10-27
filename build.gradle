@@ -4,6 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '26.0.2'
     defaultConfig {
+        multiDexEnabled true
         applicationId "com.example.tomoki.faceapiexample"
         minSdkVersion 21
         targetSdkVersion 25
@@ -27,5 +28,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile 'com.microsoft.projectoxford:face:1.0.0'
+    //ライブラリの追加
+    compile 'com.microsoft.projectoxford:face:1.3.0'
 }
