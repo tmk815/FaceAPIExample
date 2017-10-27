@@ -79,12 +79,14 @@ public class MainActivity extends AppCompatActivity {
                     protected Face[] doInBackground(InputStream... params) {
                         try {
                             publishProgress("Detecting...");
-                            FaceServiceClient.FaceAttributeType[] faceAttributeTypes = {FaceServiceClient.FaceAttributeType.Age};
+                            //FaceAttributeTypeのうち、何を取得するかを指定。
+                            //取得できる要素はFaceServiceClient.classのenum FaceAttributeType内を参照
+                            FaceServiceClient.FaceAttributeType[] faceAttributeTypes = {FaceServiceClient.FaceAttributeType.Age,FaceServiceClient.FaceAttributeType.Emotion};
                             Face[] result = faceServiceClient.detect(
                                     params[0],
                                     true,         // returnFaceId
                                     false,        // returnFaceLandmarks
-                                    faceAttributeTypes           // returnFaceAttributes: a string like "age, gender"
+                                    faceAttributeTypes           // returnFaceAttributes
                             );
                             if (result == null) {
                                 publishProgress("Detection Finished. Nothing detected");
@@ -134,23 +136,35 @@ public class MainActivity extends AppCompatActivity {
         int stokeWidth = 2;
         paint.setStrokeWidth(stokeWidth);
         if (faces != null) {
+            Random r = new Random();
             for (Face face : faces) {
-                Random r = new Random();
+                //乱数で色を生成
                 int red = r.nextInt(255) + 1;
                 int green = r.nextInt(255) + 1;
                 int blue = r.nextInt(255) + 1;
+                //色の設定
                 paint.setColor(Color.rgb(red, green, blue));
                 FaceRectangle faceRectangle = face.faceRectangle;
+                //顔の周りの四角の描画
                 canvas.drawRect(
                         faceRectangle.left,
                         faceRectangle.top,
                         faceRectangle.left + faceRectangle.width,
                         faceRectangle.top + faceRectangle.height,
                         paint);
+                //フォントサイズの設定
                 paint.setTextSize(faceRectangle.width/2);
                 FaceAttribute attribute = face.faceAttributes;
+                //文字幅
                 float size = paint.measureText(String.valueOf(attribute.age));
-                canvas.drawText(String.valueOf(attribute.age) + "歳", faceRectangle.left + (faceRectangle.width / 2) - size, (float) (faceRectangle.top + faceRectangle.height*1.5), paint);
+                //x座標
+                float x = faceRectangle.left + (faceRectangle.width / 2) - size;
+                //y座標
+                float y = (float)(faceRectangle.top + faceRectangle.height * 1.5);
+                //年齢の描画
+                canvas.drawText(String.valueOf(attribute.age) + "歳",x,y, paint);
+                //笑顔度の描画
+                canvas.drawText(String.format("%.1f", attribute.emotion.happiness*100)+"%",x,y+faceRectangle.height/2,paint);
             }
         }
         return bitmap;
